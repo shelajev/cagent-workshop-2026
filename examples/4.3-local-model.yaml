@@ -1,4 +1,4 @@
 agents:
   root:
-    model: dmr/ai/llama3.1
+    model: dmr/hf.co/unsloth/glm-4.7-flash-gguf:Q5_K_XL
     instruction: You are a helpful assistant

@@ -8,6 +8,6 @@ agents:
     add_date: true
 
   unslopper:
-    model: dmr/hf.co/n8programs/unslopper-gguf:Q8_0
+    model: dmr/hf.co/n8programs/unslopper-gguf:Q4_0
     description: Rewrites text to sound more natural and less AI-generated
     instruction: Rewrite this text
