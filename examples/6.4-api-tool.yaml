@@ -1,0 +1,12 @@
+
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: You are an assistant that can look up puzzles
+    toolsets:
+      - type: api
+        api_config:
+          name: daily-puzzle
+          instruction: Get the daily chess puzzle
+          endpoint: https://api.chess.com/pub/puzzle
+          method: GET

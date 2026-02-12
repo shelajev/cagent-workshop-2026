@@ -1,0 +1,12 @@
+
+agents:
+  root:
+    model: anthropic/claude-sonnet-4-5
+    instruction: You are a developer assistant
+    commands:
+      status: "Show me the git status and recent commits"
+      review: "Review the current git diff and suggest improvements"
+      test: "Run the tests and fix any failures"
+    toolsets:
+      - type: shell
+      - type: filesystem

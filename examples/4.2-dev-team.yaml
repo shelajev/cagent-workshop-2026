@@ -1,0 +1,34 @@
+
+agents:
+  root:
+    model: anthropic/claude-sonnet-4-5
+    instruction: |
+      You are a tech lead. Break down tasks and delegate to your team.
+      Use the researcher for information gathering and the coder for implementation.
+    sub_agents: [researcher, coder]
+    toolsets:
+      - type: todo
+        shared: true
+      - type: think
+
+  researcher:
+    model: openai/gpt-4o
+    description: Researches topics, reads docs, searches the web
+    instruction: Find accurate, up-to-date information. Cite your sources.
+    toolsets:
+      - type: mcp
+        ref: docker:duckduckgo
+      - type: mcp
+        ref: docker:context7
+      - type: todo
+        shared: true
+
+  coder:
+    model: anthropic/claude-sonnet-4-5
+    description: Writes, reviews, and tests code
+    instruction: Write clean, well-tested code. Run tests after changes.
+    toolsets:
+      - type: shell
+      - type: filesystem
+      - type: todo
+        shared: true

@@ -1,0 +1,4 @@
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: You talk like a pirate

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cagent Workshop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="nav-top">
+<p><a href="index.html">&lt;- Back to Index</a></p>
+</div>
+<h1 id="step-5-sharing-agents">Step 5: Sharing Agents</h1>
+<p>One of cagent’s superpowers is how easy it is to share agents. Agents
+are packaged as OCI artifacts – the same format Docker images use – so
+you can push them to any container registry.</p>
+<h2 id="push-pull-run">Push, Pull, Run</h2>
+<p><strong>Push an agent to a registry:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cagent</span> push my-agent.yaml your-dockerhub-username/my-agent</span></code></pre></div>
+<p><strong>Pull an agent:</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cagent</span> pull your-dockerhub-username/my-agent</span></code></pre></div>
+<p><strong>Run directly from a registry (no pull needed):</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cagent</span> run your-dockerhub-username/my-agent</span></code></pre></div>
+<p>That’s it. Anyone with access to the registry can run your agent.</p>
+<h2 id="example-cfp-finder-agent">Example: CFP Finder Agent</h2>
+<p>Here’s a real agent we can push and share – it connects to a remote
+MCP server for conference CFP data:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/5.1-cfp-finder.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env cagent run</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Agent to help with finding information about conference CFPs</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">    instruction</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      You have access to developer.events -- a platform which knows about</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      active conference CFPs, their deadlines, and locations.</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      Help the user answer their queries.</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">add_date</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> mcp</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">remote</span><span class="kw">:</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">transport_type</span><span class="kw">:</span><span class="at"> streamable</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">url</span><span class="kw">:</span><span class="at"> https://developer-events-mcp-54127830651.europe-west2.run.app</span></span></code></pre></div>
+<p>Notice the shebang (<code>#!/usr/bin/env cagent run</code>) – this
+lets you make the YAML file executable and run it directly:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x cfps.yaml</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./cfps.yaml</span></span></code></pre></div>
+<h2 id="the-agent-catalog">The Agent Catalog</h2>
+<p>cagent has a built-in agent catalog. You can run community agents
+directly:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cagent</span> run agentcatalog/pirate</span></code></pre></div>
+<h2 id="exercise-share-your-agent">Exercise: Share Your Agent</h2>
+<ol type="1">
+<li><p>Take the developer agent you built in previous steps</p></li>
+<li><p>Push it to Docker Hub:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cagent</span> push examples/3.4-developer-agent.yaml your-username/workshop-developer</span></code></pre></div></li>
+<li><p>Have a colleague pull and run it:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cagent</span> run your-username/workshop-developer</span></code></pre></div></li>
+</ol>
+<hr />
+<h2 id="security-considerations">Security Considerations</h2>
+<p>When sharing and running agents, keep in mind:</p>
+<ul>
+<li><strong>Review before running</strong>: Always look at an agent’s
+YAML before running it from an untrusted source. Agents with
+<code>shell</code> access can execute arbitrary commands.</li>
+<li><strong>Tool permissions</strong>: cagent supports permission rules
+to restrict what tools can do:</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">permissions</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">deny</span><span class="kw">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;shell:cmd=rm *&quot;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;shell:cmd=sudo *&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;shell:cmd=git push --force*&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">allow</span><span class="kw">:</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;shell:cmd=ls *&quot;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;shell:cmd=git status*&quot;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;shell:cmd=go test*&quot;</span></span></code></pre></div>
+<ul>
+<li><strong>Sandboxed execution</strong>: Use Docker sandboxes (covered
+in <a href="step7_docker_sandboxes.html">Step 7</a>) to run untrusted
+agents safely.</li>
+<li><strong>Environment variables</strong>: Be careful with API keys –
+don’t push agents that embed secrets. Use environment variables at
+runtime instead.</li>
+<li><strong>MCP server trust</strong>: Docker MCP servers run in
+containers, providing isolation. But remote MCP servers can see the data
+you send them.</li>
+</ul>
+<div class="tip">
+<p><strong>Best practice:</strong> Define explicit
+<code>permissions</code> in your agent YAML to lock down what tools are
+allowed to do, especially for agents you plan to share.</p>
+</div>
+<div class="nav-bottom">
+<p><a href="step4_systems_of_agents.html">&lt;- Step 4: Systems of
+Agents</a> | <a href="step6_new_cool_things.html">Step 6: New Cool
+Things -&gt;</a></p>
+</div>
+<div class="footer">Built with cagent &hearts;</div>
+</body>
+</html>

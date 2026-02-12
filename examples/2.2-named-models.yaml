@@ -1,0 +1,18 @@
+models:
+  smart:
+    provider: anthropic
+    model: claude-sonnet-4-5
+  fast:
+    provider: openai
+    model: gpt-4o-mini
+
+agents:
+  root:
+    model: smart
+    instruction: You are a helpful assistant
+    sub_agents: [quick]
+
+  quick:
+    model: fast
+    description: A fast responder for simple questions
+    instruction: Answer briefly and concisely

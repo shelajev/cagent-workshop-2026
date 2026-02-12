@@ -1,0 +1,15 @@
+
+agents:
+  root:
+    model: anthropic/claude-sonnet-4-5
+    description: Conference CFP finder
+    instruction: |
+      You have access to developer.events -- a platform which knows about
+      active conference CFPs, their deadlines, and locations.
+      Help the user find relevant CFPs.
+    add_date: true
+    toolsets:
+      - type: mcp
+        remote:
+          transport_type: streamable
+          url: https://developer-events-mcp-54127830651.europe-west2.run.app

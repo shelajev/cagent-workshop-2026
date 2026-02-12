@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cagent Workshop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="nav-top">
+<p><a href="index.html">&lt;- Back to Index</a></p>
+</div>
+<h1 id="step-2-your-first-agent">Step 2: Your First Agent</h1>
+<p>Let’s create your first agent and understand the two fundamental
+building blocks: <strong>models</strong> and
+<strong>instructions</strong>.</p>
+<h2 id="the-simplest-agent">The Simplest Agent</h2>
+<blockquote>
+<p>Run it: <code>cagent run examples/2.1-pirate-hello.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You talk like a pirate</span></span></code></pre></div>
+<p>You should see the cagent TUI (terminal UI). Type a message and your
+agent will respond in pirate speak!</p>
+<h2 id="models">Models</h2>
+<p>The <code>model</code> field tells cagent which LLM to use. The
+format is <code>provider/model-name</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Example</th>
+<th>API Key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenAI</td>
+<td><code>openai/gpt-4o</code></td>
+<td><code>OPENAI_API_KEY</code></td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td><code>anthropic/claude-sonnet-4-5</code></td>
+<td><code>ANTHROPIC_API_KEY</code></td>
+</tr>
+<tr>
+<td>Google</td>
+<td><code>google/gemini-2.5-flash</code></td>
+<td><code>GOOGLE_API_KEY</code></td>
+</tr>
+<tr>
+<td>Docker Model Runner</td>
+<td><code>dmr/ai/llama3.1</code></td>
+<td>None (local!)</td>
+</tr>
+</tbody>
+</table>
+<div class="tip">
+<p><strong>Tip:</strong> Don’t have an API key? Use Docker Model Runner
+for local models – no key required!</p>
+</div>
+<h3 id="named-models">Named Models</h3>
+<p>For larger configs with multiple agents, define models once and
+reference them by name:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/2.2-named-models.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">models</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">smart</span><span class="kw">:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">provider</span><span class="kw">:</span><span class="at"> anthropic</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> claude-sonnet-4-5</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">fast</span><span class="kw">:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">provider</span><span class="kw">:</span><span class="at"> openai</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> gpt-4o-mini</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> smart</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a helpful assistant</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">sub_agents</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">quick</span><span class="kw">]</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">quick</span><span class="kw">:</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> fast</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> A fast responder for simple questions</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Answer briefly and concisely</span></span></code></pre></div>
+<p>Here <code>smart</code> and <code>fast</code> are aliases – each
+agent picks the model that fits its role.</p>
+<h2 id="instructions">Instructions</h2>
+<p>The <code>instruction</code> field is the system prompt – it tells
+the agent who it is and how to behave.</p>
+<p>Simple one-liner:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a helpful assistant that speaks concisely.</span></span></code></pre></div>
+<p>Multi-line with YAML’s <code>|</code> syntax:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">instruction</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  You are a knowledgeable assistant that helps users with various tasks.</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  Always be helpful, accurate, and concise in your responses.</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  When you don&#39;t know something, say so rather than guessing.</span></code></pre></div>
+<h3 id="enriching-context">Enriching Context</h3>
+<p>cagent can automatically inject useful context into the agent’s
+prompt:</p>
+<blockquote>
+<p>Run it:
+<code>cagent run examples/2.3-context-enrichment.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a developer assistant</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">add_date</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">               # Injects current date</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">add_environment_info</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">   # Injects OS, working directory, git status</span></span></code></pre></div>
+<p>This is especially useful for developer agents that need to know
+about the current project.</p>
+<h2 id="exercise-build-your-own">Exercise: Build Your Own</h2>
+<p>Create an agent that:</p>
+<ol type="1">
+<li>Uses whatever model provider you have access to</li>
+<li>Has a custom personality (a chef, a detective, a poet – your
+choice!)</li>
+<li>Includes <code>add_date: true</code> so it knows what day it is</li>
+</ol>
+<p>Run it and have a conversation!</p>
+<h2 id="whats-next">What’s Next</h2>
+<p>Our agent can talk, but it can’t <em>do</em> anything yet. In the
+next step, we’ll give it superpowers with <strong>tools</strong>.</p>
+<div class="nav-bottom">
+<p><a href="step1_intro.html">&lt;- Step 1: Introduction</a> | <a
+href="step3_tools.html">Step 3: Tools -&gt;</a></p>
+</div>
+<div class="footer">Built with cagent &hearts;</div>
+</body>
+</html>

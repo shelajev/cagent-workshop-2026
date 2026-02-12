@@ -1,0 +1,9 @@
+
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: You are a helpful assistant
+    toolsets:
+      - type: mcp
+        command: docker
+        args: ["mcp", "gateway", "run"]

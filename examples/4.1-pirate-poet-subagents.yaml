@@ -1,0 +1,16 @@
+
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: Answer the user's query. Delegate to specialists when needed.
+    sub_agents: [pirate, poet]
+
+  pirate:
+    model: openai/gpt-4o
+    description: An agent that talks like a pirate
+    instruction: Talk like a pirate
+
+  poet:
+    model: openai/gpt-4o
+    description: An agent that responds in verse
+    instruction: Always respond in rhyming poetry

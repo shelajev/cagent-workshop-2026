@@ -1,0 +1,7 @@
+
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: You are a project manager
+    toolsets:
+      - type: todo

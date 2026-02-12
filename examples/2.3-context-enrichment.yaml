@@ -1,0 +1,6 @@
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: You are a developer assistant
+    add_date: true
+    add_environment_info: true

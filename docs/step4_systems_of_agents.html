@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cagent Workshop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="nav-top">
+<p><a href="index.html">&lt;- Back to Index</a></p>
+</div>
+<h1 id="step-4-systems-of-agents-local-ai">Step 4: Systems of Agents
+&amp; Local AI</h1>
+<p>Adding tools to a single agent is powerful, but LLMs tend to perform
+worse when they have too many tools. The solution?
+<strong>Sub-agents</strong> – specialized agents that each focus on a
+specific task.</p>
+<h2 id="sub-agents">Sub-Agents</h2>
+<p>Define multiple agents in a single YAML file and wire them together
+with <code>sub_agents</code>:</p>
+<blockquote>
+<p>Run it:
+<code>cagent run examples/4.1-pirate-poet-subagents.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Answer the user&#39;s query. Delegate to specialists when needed.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">sub_agents</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">pirate</span><span class="kw">,</span><span class="at"> poet</span><span class="kw">]</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pirate</span><span class="kw">:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> An agent that talks like a pirate</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Talk like a pirate</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">poet</span><span class="kw">:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> An agent that responds in verse</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Always respond in rhyming poetry</span></span></code></pre></div>
+<div class="tip">
+<p><strong>Key concept:</strong> Sub-agents <strong>must</strong> have a
+<code>description</code>. The root agent reads the description to decide
+which sub-agent to delegate to – it’s how it knows who does what.</p>
+</div>
+<h3 id="how-it-works">How It Works</h3>
+<ol type="1">
+<li>The user talks to the <strong>root</strong> agent</li>
+<li>Root reads the <code>description</code> of each sub-agent</li>
+<li>Root decides if a sub-agent can handle the request better</li>
+<li>Root delegates to the sub-agent</li>
+<li>The sub-agent does its work and returns the result to root</li>
+<li>Root presents the answer to the user</li>
+</ol>
+<h3 id="a-more-practical-example">A More Practical Example</h3>
+<p>Here’s a developer team where each agent has different tools:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/4.2-dev-team.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">    instruction</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      You are a tech lead. Break down tasks and delegate to your team.</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      Use the researcher for information gathering and the coder for implementation.</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">sub_agents</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">researcher</span><span class="kw">,</span><span class="at"> coder</span><span class="kw">]</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> todo</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shared</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> think</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">researcher</span><span class="kw">:</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Researches topics, reads docs, searches the web</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Find accurate, up-to-date information. Cite your sources.</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> mcp</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">ref</span><span class="kw">:</span><span class="at"> docker:duckduckgo</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> mcp</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">ref</span><span class="kw">:</span><span class="at"> docker:context7</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> todo</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shared</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">coder</span><span class="kw">:</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Writes, reviews, and tests code</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Write clean, well-tested code. Run tests after changes.</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> shell</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> filesystem</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> todo</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shared</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code></pre></div>
+<p>Notice the <code>shared: true</code> on the todo tool – this gives
+all agents the same task list, so the tech lead can create tasks and the
+coder/researcher can pick them up. It’s how agents coordinate.</p>
+<hr />
+<h2 id="local-ai-with-docker-model-runner">Local AI with Docker Model
+Runner</h2>
+<p>Not everything needs a cloud API. <strong>Docker Model Runner
+(DMR)</strong> lets you run LLMs locally – no API key, no data leaving
+your machine.</p>
+<h3 id="enabling-docker-model-runner">Enabling Docker Model Runner</h3>
+<p>DMR needs to be enabled in Docker Desktop:</p>
+<ol type="1">
+<li>Open <strong>Docker Desktop</strong> -&gt; <strong>Settings</strong>
+-&gt; <strong>Features in development</strong></li>
+<li>Enable <strong>Docker Model Runner</strong></li>
+<li>Restart Docker Desktop</li>
+</ol>
+<p>See the <a href="https://docs.docker.com/ai/model-runner/">Docker
+Model Runner docs</a> for details.</p>
+<h3 id="using-a-local-model">Using a Local Model</h3>
+<p>Pull a model first:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> model pull ai/llama3.1</span></code></pre></div>
+<p>Then reference it with the <code>dmr/</code> prefix:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/4.3-local-model.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> dmr/ai/llama3.1</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a helpful assistant</span></span></code></pre></div>
+<h3 id="the-unslopper-pattern">The Unslopper Pattern</h3>
+<p>AI-generated text can sound generic and robotic – a phenomenon
+sometimes called “slop.” The <strong>unslopper</strong> is a specialized
+local model fine-tuned to rewrite text to sound more natural and
+human.</p>
+<p>The neat pattern: use a smart cloud model for reasoning and user
+interaction, but delegate text rewriting to a local model – keeping that
+data on your machine:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/4.4-unslopper.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">    instruction</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      Use the unslopper agent to rewrite text.</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      It&#39;s a simple agent -- it only ingests text and returns text.</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">sub_agents</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">unslopper</span><span class="kw">]</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">add_date</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">unslopper</span><span class="kw">:</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> dmr/hf.co/n8programs/unslopper-gguf:Q8_0</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Rewrites text to sound more natural and less AI-generated</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Rewrite this text</span></span></code></pre></div>
+<div class="tip">
+<p><strong>Tip:</strong> Pull the unslopper model first:
+<code>docker model pull hf.co/n8programs/unslopper-gguf:Q8_0</code></p>
+</div>
+<h3 id="docker-model-runner-models">Docker Model Runner Models</h3>
+<p>Browse available models on Docker Hub under the <code>ai/</code>
+namespace:</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Pull Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Llama 3.1</td>
+<td><code>docker model pull ai/llama3.1</code></td>
+</tr>
+<tr>
+<td>SmolLM2</td>
+<td><code>docker model pull ai/smollm2</code></td>
+</tr>
+<tr>
+<td>Mistral</td>
+<td><code>docker model pull ai/mistral</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="docker-offload">Docker Offload</h2>
+<blockquote>
+<p><strong>Note:</strong> Docker Offload lets you run agent workloads on
+remote Docker cloud infrastructure – no local compute needed. Great for
+long-running or resource-heavy agents. We won’t demo this today, but
+it’s worth knowing about.</p>
+</blockquote>
+<h2 id="exercise-build-a-multi-agent-system">Exercise: Build a
+Multi-Agent System</h2>
+<p>Create a YAML file with:</p>
+<ol type="1">
+<li>A <strong>root</strong> agent that coordinates</li>
+<li>At least one sub-agent with <strong>cloud</strong> model +
+tools</li>
+<li>A sub-agent using a <strong>local</strong> model via DMR (if you
+have Docker Model Runner set up)</li>
+</ol>
+<p>Try giving the root agent a complex task that requires
+delegation!</p>
+<div class="nav-bottom">
+<p><a href="step3_tools.html">&lt;- Step 3: Tools</a> | <a
+href="step5_sharing_agents.html">Step 5: Sharing Agents -&gt;</a></p>
+</div>
+<div class="footer">Built with cagent &hearts;</div>
+</body>
+</html>

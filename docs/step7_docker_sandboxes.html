@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cagent Workshop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="nav-top">
+<p><a href="index.html">&lt;- Back to Index</a></p>
+</div>
+<h1 id="step-7-docker-sandboxes">Step 7: Docker Sandboxes</h1>
+<p>When agents have shell access, they can execute arbitrary commands on
+your machine. That’s powerful – but risky. <strong>Docker
+sandboxes</strong> solve this by running your agent in an isolated
+container environment.</p>
+<h2 id="running-cagent-in-a-sandbox">Running cagent in a Sandbox</h2>
+<p>The simplest way to sandbox an agent:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> sandbox run cagent .</span></code></pre></div>
+<p>This runs cagent inside a Docker sandbox with your current directory
+mounted. The agent can read and modify your project files, but it’s
+isolated from the rest of your system.</p>
+<h2 id="why-sandboxes">Why Sandboxes?</h2>
+<ul>
+<li><strong>Safety</strong>: The agent can’t accidentally delete system
+files, install malware, or mess with your environment</li>
+<li><strong>Reproducibility</strong>: The sandbox provides a clean,
+consistent environment</li>
+<li><strong>Confidence</strong>: You can let the agent use
+<code>shell</code> freely without worrying about damage</li>
+</ul>
+<h2 id="how-it-works">How It Works</h2>
+<p>When you run <code>docker sandbox run cagent .</code>:</p>
+<ol type="1">
+<li>Docker creates an isolated container environment</li>
+<li>Your current directory (<code>.</code>) is mounted into the
+sandbox</li>
+<li>cagent starts inside the container with full shell access</li>
+<li>The agent can read/write your project files but nothing else on your
+system</li>
+</ol>
+<p>The last argument is the <strong>workspace directory</strong> to
+mount (defaults to <code>.</code>):</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sandbox with current directory</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> sandbox run cagent .</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Sandbox with a specific project directory</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> sandbox run cagent ~/projects/my-app</span></code></pre></div>
+<p>Everything after <code>--</code> gets passed as arguments to cagent.
+This is how you run a specific agent file in a sandbox:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the default cagent agent in a sandbox</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> sandbox run cagent .</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run a specific agent YAML in a sandbox</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> sandbox run cagent . <span class="at">--</span> examples/3.4-developer-agent.yaml</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Continue a previous session</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> sandbox run cagent . <span class="at">--</span> <span class="at">--continue</span></span></code></pre></div>
+<p>Since the workspace directory is mounted into the sandbox, cagent can
+see all your files – including your agent YAML files.</p>
+<h2 id="exercise">Exercise</h2>
+<ol type="1">
+<li><p>Try running one of the workshop agents in a sandbox:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> sandbox run cagent . <span class="at">--</span> examples/3.4-developer-agent.yaml</span></code></pre></div></li>
+<li><p>Ask it to create files, run commands, and verify they’re
+contained within the sandbox.</p></li>
+</ol>
+<div class="nav-bottom">
+<p><a href="step6_new_cool_things.html">&lt;- Step 6: New Cool
+Things</a> | <a href="step8_thankyou.html">Thank You! -&gt;</a></p>
+</div>
+<div class="footer">Built with cagent &hearts;</div>
+</body>
+</html>

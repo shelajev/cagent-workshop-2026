@@ -1,0 +1,17 @@
+
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: You are a DevOps assistant
+    toolsets:
+      - type: script
+        shell:
+          get_ip:
+            cmd: "curl -s https://ipinfo.io | jq -r .ip"
+            description: "Get my public IP address"
+          docker_ps:
+            cmd: "docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
+            description: "List running Docker containers"
+          disk_usage:
+            cmd: "df -h / | tail -1"
+            description: "Check disk usage"

@@ -1,0 +1,8 @@
+
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: Summarize URLs for users
+    toolsets:
+      - type: mcp
+        ref: docker:fetch

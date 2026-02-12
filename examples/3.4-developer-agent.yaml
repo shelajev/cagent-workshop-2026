@@ -1,0 +1,12 @@
+
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: You are a developer assistant
+    add_environment_info: true
+    add_date: true
+    toolsets:
+      - type: shell
+      - type: filesystem
+      - type: todo
+      - type: think

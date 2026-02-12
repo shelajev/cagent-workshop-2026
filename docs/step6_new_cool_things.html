@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cagent Workshop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="nav-top">
+<p><a href="index.html">&lt;- Back to Index</a></p>
+</div>
+<h1 id="step-6-new-cool-things">Step 6: New Cool Things</h1>
+<p>cagent is evolving fast. Here are some of the newest and most
+interesting features.</p>
+<h2 id="memory-system">Memory System</h2>
+<p>The memory tool gives agents persistent memory across sessions. Your
+agent can remember your preferences, project context, and past
+conversations – even after you close and reopen cagent.</p>
+<blockquote>
+<p>Run it:
+<code>cagent run examples/6.1-memory-assistant.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">    instruction</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      You are a personal assistant. Remember the user&#39;s preferences</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      and context from previous conversations.</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      Always check your memory before asking questions the user</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      may have already answered.</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> memory</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ./assistant_memory.db</span></span></code></pre></div>
+<h3 id="how-it-works">How It Works</h3>
+<ul>
+<li>The agent stores information in a local SQLite database</li>
+<li>On subsequent sessions, it can recall stored information</li>
+<li>Memory persists across <code>cagent run</code> invocations – close
+and reopen, and it still remembers</li>
+<li>The <code>path</code> field controls where the database is
+stored</li>
+<li>To reset memory, simply delete the <code>.db</code> file</li>
+</ul>
+<h3 id="try-it">Try It</h3>
+<ol type="1">
+<li>Run the memory assistant:
+<code>cagent run examples/6.1-memory-assistant.yaml</code></li>
+<li>Tell it your name and what programming language you prefer</li>
+<li>Exit and run it again</li>
+<li>Ask “What’s my name?” – it should remember!</li>
+</ol>
+<h3 id="shared-memory-across-agents">Shared Memory Across Agents</h3>
+<p>In multi-agent setups, agents can share the same memory database.
+This means findings from one agent are available to others:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/6.2-shared-memory.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a team lead</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">sub_agents</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">researcher</span><span class="kw">]</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> memory</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ./team_memory.db</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">researcher</span><span class="kw">:</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Research specialist</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Research topics and remember findings</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> memory</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ./team_memory.db</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> mcp</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">ref</span><span class="kw">:</span><span class="at"> docker:duckduckgo</span></span></code></pre></div>
+<p>Both agents read from and write to the same memory, so the
+researcher’s findings are automatically available to the team lead.</p>
+<hr />
+<h2 id="speech-to-text">Speech to Text</h2>
+<p>cagent supports voice input – you can talk to your agents instead of
+typing. In the TUI, press <code>Ctrl+K</code> to toggle voice mode.
+cagent will listen through your microphone, transcribe your speech, and
+send it as a message.</p>
+<p>This is especially useful for:</p>
+<ul>
+<li>Hands-free coding assistance while looking at code</li>
+<li>Giving longer, more natural instructions without typing</li>
+<li>Accessibility</li>
+</ul>
+<div class="tip">
+<p><strong>Note:</strong> Speech-to-text uses your system’s audio input.
+Make sure your microphone is working and permissions are granted. Check
+<code>cagent run --help</code> for voice-related flags.</p>
+</div>
+<hr />
+<h2 id="script-tools">Script Tools</h2>
+<p>Define custom shell commands as tools – no MCP server needed:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/6.3-script-tools.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a DevOps assistant</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> script</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">get_ip</span><span class="kw">:</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">cmd</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;curl -s https://ipinfo.io | jq -r .ip&quot;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">description</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Get my public IP address&quot;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">docker_ps</span><span class="kw">:</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">cmd</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;docker ps --format &#39;table {{.Names}}</span><span class="sc">\t</span><span class="st">{{.Status}}</span><span class="sc">\t</span><span class="st">{{.Ports}}&#39;&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">description</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;List running Docker containers&quot;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">disk_usage</span><span class="kw">:</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">cmd</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;df -h / | tail -1&quot;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">description</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Check disk usage&quot;</span></span></code></pre></div>
+<h3 id="api-tools">API Tools</h3>
+<p>Expose HTTP endpoints as tools:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/6.4-api-tool.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are an assistant that can look up puzzles</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> api</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">api_config</span><span class="kw">:</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">name</span><span class="kw">:</span><span class="at"> daily-puzzle</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Get the daily chess puzzle</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">endpoint</span><span class="kw">:</span><span class="at"> https://api.chess.com/pub/puzzle</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">method</span><span class="kw">:</span><span class="at"> GET</span></span></code></pre></div>
+<hr />
+<h2 id="commands-agent-shortcuts">Commands (Agent Shortcuts)</h2>
+<p>Define named commands that expand into full prompts. Type
+<code>/status</code> in the TUI and it sends the full instruction:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/6.5-commands.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a developer assistant</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">commands</span><span class="kw">:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">status</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Show me the git status and recent commits&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">review</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Review the current git diff and suggest improvements&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">test</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Run the tests and fix any failures&quot;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> shell</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> filesystem</span></span></code></pre></div>
+<div class="nav-bottom">
+<p><a href="step5_sharing_agents.html">&lt;- Step 5: Sharing Agents</a>
+| <a href="step7_docker_sandboxes.html">Step 7: Docker Sandboxes
+-&gt;</a></p>
+</div>
+<div class="footer">Built with cagent &hearts;</div>
+</body>
+</html>

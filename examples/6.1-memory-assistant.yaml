@@ -1,0 +1,12 @@
+
+agents:
+  root:
+    model: anthropic/claude-sonnet-4-5
+    instruction: |
+      You are a personal assistant. Remember the user's preferences
+      and context from previous conversations.
+      Always check your memory before asking questions the user
+      may have already answered.
+    toolsets:
+      - type: memory
+        path: ./assistant_memory.db

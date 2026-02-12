@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cagent Workshop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="nav-top">
+<p><a href="index.html">&lt;- Back to Index</a></p>
+</div>
+<h1 id="step-3-tools-builtin-mcp-skills">Step 3: Tools – Builtin, MCP
+&amp; Skills</h1>
+<p>An agent without tools is just a chatbot. <strong>Tools</strong> are
+what make agents useful – they let agents take actions in the real
+world.</p>
+<p>cagent provides three ways to give agents tools:</p>
+<ol type="1">
+<li><strong>Builtin tools</strong> – ready to use, no setup</li>
+<li><strong>MCP servers</strong> – the Docker MCP Toolkit ecosystem</li>
+<li><strong>Skills</strong> – auto-loading task-specific abilities
+(new!)</li>
+</ol>
+<h2 id="builtin-tools">Builtin Tools</h2>
+<p>cagent ships with several builtin tools. Add them to your agent’s
+<code>toolsets</code>:</p>
+<h3 id="think">Think</h3>
+<p>Lets the model pause and reason step-by-step before responding. This
+improves accuracy on complex tasks like math, logic, and multi-step
+planning.</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/3.1-think.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a problem solver</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> think</span></span></code></pre></div>
+<h3 id="todo">Todo</h3>
+<p>Task management – the agent can break complex work into smaller steps
+and track progress. Essential for any agent doing multi-step tasks.</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/3.3-todo.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a project manager</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> todo</span></span></code></pre></div>
+<h3 id="shell-filesystem">Shell &amp; Filesystem</h3>
+<p>The power tools – let your agent run commands and work with
+files.</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/3.4-developer-agent.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a developer assistant</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">add_environment_info</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">add_date</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> shell</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> filesystem</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> todo</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> think</span></span></code></pre></div>
+<div class="tip">
+<p><strong>Tip:</strong> Combine tools strategically. A developer agent
+with <code>shell</code>, <code>filesystem</code>, <code>todo</code>, and
+<code>think</code> is a powerful combination – it can plan work, read
+code, make changes, and run tests.</p>
+</div>
+<p>There’s also a <strong>memory</strong> tool for persistent recall
+across sessions – we’ll cover that in depth in <a
+href="step6_new_cool_things.html">Step 6</a>.</p>
+<hr />
+<h2 id="mcp-model-context-protocol">MCP (Model Context Protocol)</h2>
+<p>MCP is an open standard for connecting AI agents to external tools
+and services. The <strong>Docker MCP Toolkit</strong> makes it trivially
+easy to use MCP servers – they run in containers, so there’s nothing to
+install.</p>
+<h3 id="docker-toolkit-mcp-servers">Docker Toolkit MCP Servers</h3>
+<p>The simplest way to add MCP tools. Just reference them with
+<code>docker:</code>:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/3.5-mcp-fetch.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Summarize URLs for users</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> mcp</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">ref</span><span class="kw">:</span><span class="at"> docker:fetch</span></span></code></pre></div>
+<p>Some popular Docker MCP servers:</p>
+<table>
+<thead>
+<tr>
+<th>Server</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docker:fetch</code></td>
+<td>Fetch and parse web content</td>
+</tr>
+<tr>
+<td><code>docker:duckduckgo</code></td>
+<td>Web search</td>
+</tr>
+<tr>
+<td><code>docker:context7</code></td>
+<td>Up-to-date library documentation</td>
+</tr>
+<tr>
+<td><code>docker:brave</code></td>
+<td>Brave web search</td>
+</tr>
+<tr>
+<td><code>docker:github</code></td>
+<td>GitHub integration</td>
+</tr>
+</tbody>
+</table>
+<h3 id="docker-mcp-gateway">Docker MCP Gateway</h3>
+<p>The MCP Gateway gives your agent access to all MCP servers you’ve
+configured in Docker Desktop. Instead of listing them one by one, you
+get everything at once:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/3.6-mcp-gateway.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a helpful assistant</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> mcp</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">command</span><span class="kw">:</span><span class="at"> docker</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">args</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">&quot;mcp&quot;</span><span class="kw">,</span><span class="at"> </span><span class="st">&quot;gateway&quot;</span><span class="kw">,</span><span class="at"> </span><span class="st">&quot;run&quot;</span><span class="kw">]</span></span></code></pre></div>
+<h3 id="remote-mcp-servers">Remote MCP Servers</h3>
+<p>Connect to any remote MCP server over the network:</p>
+<blockquote>
+<p>Run it: <code>cagent run examples/3.7-mcp-remote-cfp.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Conference CFP finder</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">    instruction</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      You have access to developer.events -- a platform which knows about</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      active conference CFPs, their deadlines, and locations.</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      Help the user find relevant CFPs.</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">add_date</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> mcp</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">remote</span><span class="kw">:</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">transport_type</span><span class="kw">:</span><span class="at"> streamable</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">url</span><span class="kw">:</span><span class="at"> https://developer-events-mcp-54127830651.europe-west2.run.app</span></span></code></pre></div>
+<h3 id="local-mcp-servers-docker-containers">Local MCP Servers (Docker
+containers)</h3>
+<p>Run any MCP server packaged as a Docker image. This is great for
+custom or third-party MCP servers:</p>
+<blockquote>
+<p>Run it:
+<code>cagent run examples/3.8-mcp-docker-container.yaml</code></p>
+</blockquote>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You help users with chess. You can analyze positions, explain moves, and play games.</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">add_date</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> mcp</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">command</span><span class="kw">:</span><span class="at"> docker</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">args</span><span class="kw">:</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> run</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> -i</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> --rm</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> olegselajev241/mcp-chess</span></span></code></pre></div>
+<p>The <code>-i</code> and <code>--rm</code> flags are important:
+<code>-i</code> keeps stdin open for the MCP protocol, and
+<code>--rm</code> cleans up the container when done.</p>
+<h3 id="exercise-add-mcp-to-your-agent">Exercise: Add MCP to Your
+Agent</h3>
+<p>Take your agent from Step 2 and add one of these MCP toolsets:</p>
+<ul>
+<li><code>docker:duckduckgo</code> – let it search the web</li>
+<li><code>docker:fetch</code> – let it read web pages</li>
+<li><code>docker:context7</code> – let it look up library
+documentation</li>
+</ul>
+<p>Try asking it something it couldn’t answer before!</p>
+<hr />
+<h2 id="skills-auto-loading">Skills (Auto-Loading)</h2>
+<p>Skills are a newer cagent feature that lets you define reusable,
+auto-loading capabilities for your agents. Instead of writing detailed
+instructions in every agent YAML, you place skill definitions in your
+project and cagent discovers them automatically.</p>
+<p>How it works:</p>
+<ol type="1">
+<li>Create a <code>.agents/skills/</code> directory in your project</li>
+<li>Add subdirectories, each containing a <code>SKILL.md</code>
+file</li>
+<li>Enable skills on your agent with <code>skills: true</code></li>
+<li>cagent auto-discovers and loads the skills at runtime</li>
+</ol>
+<p>This is great for team-wide conventions – define skills once in your
+repo (e.g. “how to run tests”, “code review checklist”, “deployment
+process”) and every agent picks them up.</p>
+<div class="tip">
+<p><strong>Note:</strong> Skills is a very recent addition to cagent.
+Check the <a href="https://github.com/docker/cagent">cagent docs</a> for
+the latest on this feature.</p>
+</div>
+<h2 id="whats-next">What’s Next</h2>
+<p>Now that our agents have tools, let’s make them work
+<em>together</em>. In the next step, we’ll build systems of agents with
+sub-agents and local AI.</p>
+<div class="nav-bottom">
+<p><a href="step2_mini_example.html">&lt;- Step 2: Your First Agent</a>
+| <a href="step4_systems_of_agents.html">Step 4: Systems of Agents
+-&gt;</a></p>
+</div>
+<div class="footer">Built with cagent &hearts;</div>
+</body>
+</html>

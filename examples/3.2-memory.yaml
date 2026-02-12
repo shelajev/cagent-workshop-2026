@@ -1,0 +1,8 @@
+
+agents:
+  root:
+    model: openai/gpt-4o
+    instruction: You are a personal assistant
+    toolsets:
+      - type: memory
+        path: ./memory.db

@@ -1,0 +1,4 @@
+agents:
+  root:
+    model: dmr/ai/llama3.1
+    instruction: You are a helpful assistant

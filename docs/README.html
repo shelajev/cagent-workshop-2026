@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cagent Workshop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="nav-top">
+<p><a href="index.html">&lt;- Back to Index</a></p>
+</div>
+<h1 id="building-agents-with-cagent-workshop">Building Agents with
+cagent – Workshop</h1>
+<blockquote>
+<p>Build, run, and share AI agents with a declarative YAML config, rich
+tool ecosystem, and multi-agent orchestration.</p>
+</blockquote>
+<p><strong>cagent</strong> is Docker’s open-source framework for
+creating AI agents. You define agents in YAML – give them a model,
+instructions, and tools – and <code>cagent</code> handles the rest. No
+code required.</p>
+<p>In this workshop you will go from zero to building multi-agent
+systems, connecting to MCP servers, running local models, and sharing
+agents via Docker registries.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><strong>cagent</strong> installed (see below)</li>
+<li><strong>Docker Desktop 4.49+</strong> (for MCP and sandbox
+steps)</li>
+<li>A <strong>Docker Hub</strong> account (for sharing agents)</li>
+<li>At least one <strong>API key</strong> from a supported LLM
+provider</li>
+</ul>
+<h2 id="installing-cagent">Installing cagent</h2>
+<p><strong>Docker Desktop</strong> (4.49+) – cagent comes pre-installed.
+Just run <code>cagent</code> in your terminal.</p>
+<p><strong>Homebrew:</strong></p>
+<pre><code>brew install cagent</code></pre>
+<p><strong>Binary releases</strong> – download from <a
+href="https://github.com/docker/cagent/releases">GitHub
+Releases</a>.</p>
+<h2 id="api-key-setup">API Key Setup</h2>
+<p>Set at least one of these environment variables:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">OPENAI_API_KEY</span><span class="op">=</span>sk-...</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span>sk-ant-...</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GOOGLE_API_KEY</span><span class="op">=</span>AI...</span></code></pre></div>
+<p>All keys are optional – you just need at least one provider
+configured.</p>
+<div class="tip">
+<p><strong>Tip:</strong> If you don’t have any API keys, you can use
+local models via <a
+href="https://docs.docker.com/ai/model-runner/">Docker Model Runner</a>
+with the <code>dmr/</code> provider prefix – no API key needed!</p>
+</div>
+<h2 id="what-youll-learn">What You’ll Learn</h2>
+<ol type="1">
+<li>What cagent is and why it’s different</li>
+<li>Creating your first agent with models and instructions</li>
+<li>Extending agents with builtin tools, MCP servers, and skills</li>
+<li>Building multi-agent systems with sub-agents</li>
+<li>Running local AI models with Docker Model Runner</li>
+<li>Sharing agents through OCI registries</li>
+<li>Memory, speech-to-text, and other new features</li>
+<li>Running agents in Docker sandboxes</li>
+</ol>
+<p>Let’s get started!</p>
+<div class="nav-bottom">
+<p><a href="step1_intro.html">Step 1: Introduction to cagent
+-&gt;</a></p>
+</div>
+<div class="footer">Built with cagent &hearts;</div>
+</body>
+</html>

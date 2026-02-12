@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cagent Workshop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="nav-top">
+<p><a href="index.html">&lt;- Back to Index</a></p>
+</div>
+<h1 id="step-1-introduction-to-cagent">Step 1: Introduction to
+cagent</h1>
+<h2 id="what-is-cagent">What is cagent?</h2>
+<p><strong>cagent</strong> is Docker’s open-source framework for
+building and running AI agents. It lets you define intelligent agents in
+a simple YAML file – give them a model, instructions, and tools – and
+run them from your terminal.</p>
+<pre><code>cagent run agent.yaml</code></pre>
+<p>That’s it. No boilerplate code, no SDKs to learn, no framework
+lock-in.</p>
+<h2 id="motivation">Motivation</h2>
+<p>AI agents are programs that can take actions on your behalf – they
+can read and write files, run commands, call APIs, search the web, and
+reason about complex problems.</p>
+<p>But building agents today typically means:</p>
+<ul>
+<li>Writing lots of glue code to connect an LLM to tools</li>
+<li>Managing prompt engineering, tool calling, and error handling</li>
+<li>Dealing with different provider APIs</li>
+<li>Building infrastructure for multi-agent coordination</li>
+</ul>
+<p><strong>cagent eliminates all of that.</strong> You declare what you
+want in YAML, and cagent handles the orchestration.</p>
+<h2 id="how-cagent-is-different">How cagent is Different</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Traditional Agent Frameworks</th>
+<th>cagent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Write code (Python, JS, etc.)</td>
+<td>Declare in YAML</td>
+</tr>
+<tr>
+<td>Single-provider SDKs</td>
+<td>Provider-agnostic (OpenAI, Anthropic, Google, local models)</td>
+</tr>
+<tr>
+<td>Build your own tool system</td>
+<td>Rich ecosystem of builtin tools + MCP</td>
+</tr>
+<tr>
+<td>Complex multi-agent code</td>
+<td>Sub-agents defined declaratively</td>
+</tr>
+<tr>
+<td>Hard to share</td>
+<td>Push/pull agents like Docker images</td>
+</tr>
+<tr>
+<td>Local-only execution</td>
+<td>Run anywhere – local, containers, sandboxes</td>
+</tr>
+</tbody>
+</table>
+<p>Key differentiators:</p>
+<ul>
+<li><strong>Declarative</strong>: YAML-first, no application code
+needed</li>
+<li><strong>Docker-native</strong>: Comes with Docker Desktop 4.49+,
+runs MCP servers in containers, shares via OCI registries</li>
+<li><strong>Multi-agent</strong>: Build teams of specialized agents that
+delegate to each other</li>
+<li><strong>Tool-rich</strong>: Builtin tools + any MCP server + custom
+scripts + APIs</li>
+<li><strong>Provider-agnostic</strong>: Swap models with one line –
+<code>openai/gpt-4o</code>, <code>anthropic/claude-sonnet-4-5</code>,
+<code>dmr/ai/llama3.1</code> (local!)</li>
+</ul>
+<h2 id="a-quick-taste">A Quick Taste</h2>
+<p>Here’s the simplest possible agent:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You are a helpful assistant</span></span></code></pre></div>
+<p>And here’s a multi-agent team with tools and MCP – still just
+YAML:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">agents</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">root</span><span class="kw">:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> You lead a team of specialized agents</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">sub_agents</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">researcher</span><span class="kw">,</span><span class="at"> coder</span><span class="kw">]</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">researcher</span><span class="kw">:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> openai/gpt-4o</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Researches topics using the web</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Search the web and summarize findings</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> mcp</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">ref</span><span class="kw">:</span><span class="at"> docker:duckduckgo</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">coder</span><span class="kw">:</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">model</span><span class="kw">:</span><span class="at"> anthropic/claude-sonnet-4-5</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Writes and runs code</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">instruction</span><span class="kw">:</span><span class="at"> Write clean, tested code</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toolsets</span><span class="kw">:</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> filesystem</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> shell</span></span></code></pre></div>
+<p>We’ll build up to this step by step. In the next section, we’ll
+create your first agent.</p>
+<div class="nav-bottom">
+<p><a href="README.html">&lt;- Workshop Overview</a> | <a
+href="step2_mini_example.html">Step 2: Your First Agent -&gt;</a></p>
+</div>
+<div class="footer">Built with cagent &hearts;</div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+agents:
+  root:
+    model: anthropic/claude-sonnet-4-5
+    instruction: |
+      Use the unslopper agent to rewrite text.
+      It's a simple agent -- it only ingests text and returns text.
+    sub_agents: [unslopper]
+    add_date: true
+
+  unslopper:
+    model: dmr/hf.co/n8programs/unslopper-gguf:Q8_0
+    description: Rewrites text to sound more natural and less AI-generated
+    instruction: Rewrite this text

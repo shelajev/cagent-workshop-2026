@@ -1,0 +1,19 @@
+
+agents:
+  root:
+    model: anthropic/claude-sonnet-4-5
+    instruction: You are a team lead
+    sub_agents: [researcher]
+    toolsets:
+      - type: memory
+        path: ./team_memory.db
+
+  researcher:
+    model: openai/gpt-4o
+    description: Research specialist
+    instruction: Research topics and remember findings
+    toolsets:
+      - type: memory
+        path: ./team_memory.db
+      - type: mcp
+        ref: docker:duckduckgo

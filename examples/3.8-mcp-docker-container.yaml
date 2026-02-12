@@ -1,0 +1,13 @@
+agents:
+  root:
+    model: anthropic/claude-sonnet-4-5
+    instruction: You help users with chess. You can analyze positions, explain moves, and play games.
+    add_date: true
+    toolsets:
+      - type: mcp
+        command: docker
+        args:
+          - run
+          - -i
+          - --rm
+          - olegselajev241/mcp-chess
